@@ -1,0 +1,30 @@
+{% extends "layout.html"%}
+{% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block title %}TOTVS Sales Management{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Início" "/" %}
+{% endblock %}
+
+{% block breadcrumbrender %}
+    {% render_breadcrumbs %}
+{% endblock %}
+
+{% block contentDetail %}
+    <div class="page-header">
+        <h2>Início</h2>
+    </div>
+    <div class="container">
+        <ul class="main-menu">
+            <li class="icon-box-main icon-box-paper"><a href="{% url 'cadastros_basicos' %}"><h4>Cadastros Básicos</h4></a></li>
+            <li class="icon-box-main icon-group"><a href="{% url 'equipe.list_equipe' %}"><h4>Minha Equipe</h4></a></li>
+            <li class="icon-box-main icon-oportunidade"><a href="{% url 'oportunidade.oportunidade_menu' %}"><h4>Oportunidades</h4></a></li>
+            <li class="icon-box-main icon-historico"><a href="{% url 'core.core_historico' %}"><h4>Histórico</h4></a></li>
+            <li class="icon-box-main icon-graficos"><a href="{% url 'relatorio.relatorio_menu' %}"><h4>Relatórios</h4></a></li>
+            <li class="icon-box-main icon-clientes"><a href="{% url 'cliente.cliente_menu' %}"><h4>Clientes</h4></a></li>
+        </ul>
+    </div>
+{% endblock %}

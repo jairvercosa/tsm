@@ -1,0 +1,32 @@
+{% extends "layout.html"%}
+{% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block title %}Oportunidades{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Início" "/" %}
+    {% breadcrumb "Oportunidades" "/oportunidade/" %}
+{% endblock %}
+
+{% block breadcrumbrender %}
+    {% render_breadcrumbs %}
+{% endblock %}
+
+{% block contentDetail %}
+    <div class="page-header">
+        <h2>Oportunidade</h2>
+    </div>
+    <div class="container-flow">
+        <div class="row">
+            <ul>
+                {% if perms.oportunidade.index_dashboard %}
+                    <li><a href="{% url 'oportunidade.index_dashboard' %}">Dashboard</a></li>
+                {% endif %}
+                <li><a href="{% url 'oportunidade.list_oportunidade' %}">Minhas Oportunidades</a></li>
+                <li><a href="{% url 'oportunidade.agenda_rtc' %}">RTC Agenda</a></li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}

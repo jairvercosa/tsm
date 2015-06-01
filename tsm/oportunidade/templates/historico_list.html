@@ -1,0 +1,56 @@
+{% extends "base_list.html"%}
+{% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block title %}Histórico de Oportunidades{% endblock %}
+{% block subtitle %}Áções realizadas com oportunidades.{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Histórico" "/core/historico/" %}
+    {% breadcrumb "Oportunidades" "/oportunidade/historico/" %}
+{% endblock %}
+
+{% block breadcrumbrender %}
+    {% render_breadcrumbs %}
+{% endblock %}
+
+{% block tablelist %}
+<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered table-striped table-hover datatable" id="gridlist" url-data-source="{% url 'oportunidade.list_json_historico' %}">
+    {% csrf_token %}
+    <thead>
+        <tr class="custom-head">
+            <th width="15%" class="no_sort">Oportunidade</th>
+            <th width="5%">Criado Em</th>
+            <th width="10%">Criador</th>
+            <th width="5%">Situação</th>
+            <th width="5%">Temp. Manual</th>
+            <th width="5%">Temp. Sistema</th>
+            <th width="10%">Responsável</th>
+            <th width="10%">Líder</th>
+            <th width="5%">Valor</th>
+            <th width="5%">Ponderado</th>
+            <th width="10%">Fechamento</th>
+            <th width="5%" class="no_sort"></th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot></tfoot>
+</table>
+{% endblock %}
+{% block jsblock %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'js/grid.js' %}" ></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            grid.fnStartObject({
+                'urlData' : "{% url 'oportunidade.list_json_historico' %}",
+                'urlDel'  : '',
+                'tableObj': '#gridlist',
+                'aaSorting': [[9,'desc']]
+            });
+
+            $('#btnAddList').hide(); 
+        });
+    </script>
+{% endblock %}

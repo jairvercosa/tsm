@@ -1,0 +1,64 @@
+{% extends "layout.html"%}
+{% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/fullcalendar.css' %}" />
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/fullcalendar.print.css' %}" />
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Início" "/" %}
+    {% breadcrumb "Oportunidades" "/oportunidade/" %}
+    {% breadcrumb "RTC Agenda" "/oportunidade/rtc/" %}
+{% endblock %}
+
+{% block breadcrumbrender %}
+    {% render_breadcrumbs %}
+{% endblock %}
+
+{% block contentDetail %}
+    <div class="page-header">
+        <h2>{% block title %}RTC Agenda{% endblock %}</h2>
+        <small>{% block subtitle %}Agenda geral do RTC das oportunidades.{% endblock %}</small>
+    </div>
+    <div class="row ">
+        <div class="col-lg-4">
+            <div class="control-group">
+                <div class="controls">
+                    <div class="col-lg-3 no-padding">
+                        <label class="control-label" for="id_visao" >Visão por:</label>
+                    </div>
+                    <div class="col-lg-9 no-padding">
+                        <select id="id_visao" name="visao" >
+                        {% for usuario in usuarios %}
+                            <option value="{{ usuario.id }}">{{ usuario.first_name }} {{ usuario.last_name }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row bottom-buffer-20">
+        <div class="col-lg-12">
+            <small><i class="icon-info-sign"></i> Os eventos abaixo correspondem aos RTCs das oportunidades do usuário selecionado e seus liderados, segundo a hierarquia definida no menu <a href="{% url 'equipe.list_equipe' %}" target="_blank">"Minha Equipe"</a>.</small>
+        </div>
+    </div>
+    <div class="bottom-buffer-20">
+        <div id='calendar'></div>
+        <div class="loading"><img src="{% static 'img/loading_big.gif' %}" /></div>
+    </div>
+    <div class="modal fade" id="mdl_event"></div><!-- /.modal -->
+{% endblock %}
+
+{% block jsblock %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'js/jquery-ui-1.10.4.custom.min.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/moment.min.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/fullcalendar.min.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/fullcalendar.pt-br.js' %}" ></script>
+    <script type="text/javascript">hoje="{{ hoje }}"</script>
+    <script type="text/javascript" src="{% static 'js/rtcagenda.js' %}" ></script>
+{% endblock %}

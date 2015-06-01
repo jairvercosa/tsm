@@ -1,0 +1,33 @@
+{% extends "layout.html"%}
+{% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block title %}Histórico{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Início" "/" %}
+    {% breadcrumb "Histórico" "/core/historico/" %}
+{% endblock %}
+
+{% block breadcrumbrender %}
+    {% render_breadcrumbs %}
+{% endblock %}
+
+{% block contentDetail %}
+    <div class="page-header">
+        <h2>Histórico</h2>
+        <small>Histórico de ações do sistema para consulta.</small>
+    </div>
+    <ul>
+        <li><a href="{% url 'oportunidade.list_historico' %}">Oportunidades</a></li>
+        
+        {% if perms.equipe.list_membrohistorico %}
+        <li><a href="{% url 'equipe.list_membrohistorico' %}">Atribuições de Membros</a></li>
+        {% endif %}
+
+        {% if perms.equipe.list_membrohistorico %}
+        <li><a href="{% url 'equipe.list_membrometahistorico' %}">Atribuições de Metas</a></li>
+        {% endif %}        
+    </ul>
+{% endblock %}

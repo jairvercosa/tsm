@@ -1,0 +1,328 @@
+{% extends "layout.html"%}
+{% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block title %}Dashboard de Oportunidades{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Início" "/" %}
+    {% breadcrumb "Oportunidades" "/oportunidade/" %}
+    {% breadcrumb "Dashboard" "/oportunidade/dashboard/" %}
+{% endblock %}
+
+{% block breadcrumbrender %}
+    {% render_breadcrumbs %}
+{% endblock %}
+
+{% block contentDetail %}
+    <div ng-app="viewDashboardApp" class="viewDashboardApp">
+        <div ng-controller="ngViewDashboardCtrl">
+            <div class="row">
+                <div class="page-header">
+                    <div class="col-lg-11">
+                        <h2>Dashboard</h2>
+                        <small>Visão estratégica das oportunidades cadastradas.</small>
+                    </div>
+                    <!--<div class="col-lg-8">
+                        <div class="messageDash alert alert-dismissable element-hidden">
+                            <p class="aviso"></p>
+                        </div>
+                    </div>-->
+                    <div class="col-lg-1 wrapper-filter-dashboard">
+                        <button class="btn btn-sm btn-info top-buffer-50 dropdown-toggle pull-right" id="dlDropDown">
+                            <i class="icon icon-white icon-filter"></i>Filtros <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu pull-right" id="id-ul-filter" role="menu">
+                            <li id="id-div-filter">
+                                <div>
+                                    <form id="id-form-filter" onSubmit="return false;">
+                                        <fieldset>
+                                            <legend>Filtros do Dashboard</legend>
+                                            <div class="row">
+                                                <div class="col-lg-8">
+                                                    <div class="row">
+                                                        <div class="col-lg-3">
+                                                            <label class="control-label" for="id_visao" >Visão por:</label>
+                                                        </div>
+                                                        <div class="col-lg-9">
+                                                            <select id="id_visao" name="visao" class="form-control" >
+                                                                {% for obj in listOpt %}
+                                                                <option value="{{obj.tipo}}_{{obj.id}}">{{ obj.nome }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row top-buffer-10">
+                                                        <div class="col-lg-3">
+                                                            <label class="control-label" for="id_tipo_meta" >Tipo Meta:</label>
+                                                        </div>
+                                                        <div class="col-lg-9">
+                                                            <select id="id_tipo_meta" name="tipo_meta" class="form-control">
+                                                                {% for obj in listOptMeta %}
+                                                                <option value="{{obj.id}}">{{ obj.nome }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div class="row">
+                                                        <div class="col-lg-5">
+                                                            <label class="control-label" for="id_dia_ini" >Previsão de:</label>
+                                                        </div>
+                                                        <div class="col-lg-7">
+                                                            <div class="control-group">
+                                                                <div class="controls">
+                                                                    <input type="text" id="id_dia_ini" name="dia_ini" value="{{ diaIni }}" class="dateField"/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-5">
+                                                            <label class="control-label" for="id_dia_fim" >Previsão até:</label>
+                                                        </div>
+                                                        <div class="col-lg-7">
+                                                            <div class="control-group">
+                                                                <div class="controls">
+                                                                    <input type="text" id="id_dia_fim" name="dia_fim" value="{{ diaFim }}" class="dateField"/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <fieldset>
+                                            <div class="row div-dashboard-receitas">
+                                                <div class="col-lg-12">
+                                                    <legend>Receitas</legend>
+                                                    <ul>
+                                                    {% for receita in receitas %}
+                                                        <li>
+                                                            <div>
+                                                                <a href="javascript:void(0)" alt="{{ receita.pk }}" class="icon-checked checkinput" >{{ receita.nome }}</a>
+                                                            </div>
+                                                        </li>
+                                                    {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <button class="btn btn-sm btn-success pull-right" ng-click="onClickAtualizar()"><i class="icon-refresh icon-white"></i>Atualizar</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 div-text-filter">
+                    <div class="well well-sm">
+                        Visão <span>{[{ objFiltro.tipometa }]}</span> de <span>{[{ objFiltro.membro }]}</span> no período de <span>{[{ objFiltro.diaIni }]}</span> até <span>{[{ objFiltro.diaFim }]}</span> para as receitas <span>{[{ objFiltro.receitas }]}</span>.
+                    </div>
+                </div>
+            </div>
+            <div class="row top-buffer-25 row-chart-dashboard">
+                <div class="col-lg-8">
+                    <div class="panel panel-info no-border panel-prospeccao">
+                        <div class="panel-heading">Prospecção</div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-4 col-xs-12 col-sm-5 col-md-5">
+                                    <div class="loading_chart"><img src="{% static 'img/loading_big.gif' %}" /></div>
+                                    <canvas id="id_chart_ponderado" width="280" height="325">[No canvas support]</canvas>
+                                </div>
+                                <div class="col-lg-8 col-xs-12 col-sm-7 col-md-7">
+                                    <table class="table table-striped" id="id_ponderado_desencaixe">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th class="th-label text-red hidden-xs">Ponderado</th>
+                                                <th class="th-label text-red">Desencaixe</th>
+                                                <th class="th-label text-red">Compensação</th>
+                                                <th width="10%"class="th-label hidden-xs">FatorX</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot class="tfoot"></tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="messageDash alert alert-dismissable element-hidden">
+                                    <p class="aviso"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div class="panel panel-info no-border">
+                        <div class="panel-heading">Heat</div>
+                        <div class="panel-body panel-evolucao-pipeline"></div>
+                    </div>-->
+                </div>
+                <div class="col-lg-4">
+                    <div class="panel panel-info no-border panel-gross">
+                        <div class="panel-heading">Heat - FCST Gross</div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <h4>Total</h4>
+                                <div class="loading_chart"><img src="{% static 'img/loading_big.gif' %}" /></div>
+                                <canvas id="id_chart_gross" witdh="285" height="285">[No canvas support]</canvas>
+                                <!--<div class="loading_chart"><img src="{% static 'img/loading_big.gif' %}" /></div>
+                                <canvas id="id_chart_gross_meta" witdh="350" height="220">[No canvas support]</canvas>
+                                <h5></h5>-->
+                            </div>
+                            <div class="row">
+                                <div class="messageDash alert alert-dismissable element-hidden">
+                                    <p class="aviso"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-info no-border panel-linearidade">
+                        <div class="panel-heading">Linearidade</div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="hidden-xs">
+                                    <div class="loading_chart"><img src="{% static 'img/loading_big.gif' %}" /></div>
+                                    <table class="table table-striped" id="id_linearidade">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th colspan="3" >Até dia {[{ linearidadeHead[0].dia }]} - {[{ linearidadeHead[0].percentual }]}</th>
+                                                <th colspan="3" >Até dia {[{ linearidadeHead[1].dia }]} - {[{ linearidadeHead[1].percentual }]}</th>
+                                                <th colspan="3" >Até dia {[{ linearidadeHead[2].dia }]} - {[{ linearidadeHead[2].percentual }]}</th>
+                                            </tr>
+                                            <tr>
+                                                <th></th>
+                                                <th>Meta</th>
+                                                <th>P/U</th>
+                                                <th>Plan</th>
+
+                                                <th>Meta</th>
+                                                <th>P/U</th>
+                                                <th>Plan</th>
+
+                                                <th>Meta</th>
+                                                <th>P/U</th>
+                                                <th>Plan</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="item in linearidadeData">
+                                                <th width="8%">{[{ item.nome }]}</th>
+                                                <th width="13%">{[{ item.items[0].meta | currency:"R$ " }]}</th>
+                                                <th width="12%">{[{ item.items[0].ponderado | currency:"R$ " }]}</th>
+                                                <th width="4%">{[{ item.items[0].percTotal }]}%</th>
+
+                                                <th width="13%">{[{ item.items[1].meta | currency:"R$ " }]}</th>
+                                                <th width="12%">{[{ item.items[1].ponderado | currency:"R$ " }]}</th>
+                                                <th width="4%">{[{ item.items[1].percTotal }]}%</th>
+
+                                                <th width="13%">{[{ item.items[2].meta | currency:"R$ " }]}</th>
+                                                <th width="12%">{[{ item.items[2].ponderado | currency:"R$ " }]}</th>
+                                                <th width="4%">{[{ item.items[2].percTotal }]}%</th>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr class="tr-totalizer">
+                                                <th></th>
+                                                <th>{[{ linearidadeFoot[0].meta | currency:"R$ " }]}</th>
+                                                <th>{[{ linearidadeFoot[0].valor | currency:"R$ " }]}</th>
+                                                <th>{[{ linearidadeFoot[0].percent | number:2 }]}%</th>
+
+                                                <th>{[{ linearidadeFoot[1].meta | currency:"R$ " }]}</th>
+                                                <th>{[{ linearidadeFoot[1].valor | currency:"R$ " }]}</th>
+                                                <th>{[{ linearidadeFoot[1].percent | number:2 }]}%</th>
+
+                                                <th>{[{ linearidadeFoot[2].meta | currency:"R$ " }]}</th>
+                                                <th>{[{ linearidadeFoot[2].valor | currency:"R$ " }]}</th>
+                                                <th>{[{ linearidadeFoot[2].percent | number:2 }]}%</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                <div id="div-chart-linearidade">
+                                    <div class="col-lg-12">
+                                        <canvas id="id_chart_linearidade" class="chart_linearidade" width="1070" height="200">[No canvas support]</canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="messageDash alert alert-dismissable element-hidden">
+                                    <p class="aviso"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-info no-border panel-pedra">
+                        <div class="panel-heading">Pedra</div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <fieldset>
+                                    <legend>Resumo</legend>
+                                    <div class="col-lg-12">
+                                        <table class="table table-striped" id="id_compromisso">
+                                            <thead></thead><tbody></tbody><tfoot></tfoot>
+                                        </table>
+                                    </div>
+                                    <small class="hidden-xs hidden-sm hidden-md"><i class="icon-info-sign"></i> Passe o mouse sobre o cabeçalho para ver os significados das colunas.</small> 
+                                </fieldset>
+                            </div>
+                            <div class="row">
+                                <fieldset>
+                                    <legend>Indicadores</legend>
+                                    <div class="col-lg-12 padding-no-xs">
+                                        <h5>FCST Gross <span id="id-legend-situacao"></span></h5>
+                                        <div id="id-indicadores-pedra"><div class="loading_chart"><img src="{% static 'img/loading_big.gif' %}" /></div></div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="row">
+                                <small class="hidden-xs hidden-sm hidden-md"><i class="icon-info-sign"></i> Os percentuais exibidos consideram apenas a parte inteira dos números podendo haver variações matemática por efeitos de arredondamento.</small> 
+                            </div>
+                            <div class="row">
+                                <div class="messageDash alert alert-dismissable element-hidden">
+                                    <p class="aviso"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsblock %}
+    {{ bock.super }}
+    <script type="text/javascript" src="{% static 'js/jquery-ui-1.10.4.custom.min.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/jquery.cookies.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/jquery.number.min.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/angular.min.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/RGraph.common.core.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/RGraph.common.key.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/RGraph.common.dynamic.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/RGraph.common.effects.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/RGraph.common.tooltips.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/RGraph.bar.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/RGraph.hbar.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/RGraph.line.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/RGraph.pie.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/dashboard.js' %}" ></script>
+{% endblock %}

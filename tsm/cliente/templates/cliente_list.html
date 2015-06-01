@@ -1,0 +1,46 @@
+{% extends "base_list.html"%}
+{% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block title %}Lista de Clientes{% endblock %}
+{% block subtitle %}Lista de clientes{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Clientes" "/cliente/" %}
+    {% breadcrumb "Lista de Clientes" "/cliente/clientes/" %}
+{% endblock %}
+
+{% block breadcrumbrender %}
+    {% render_breadcrumbs %}
+{% endblock %}
+
+
+{% block tablelist %}
+<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered table-striped table-hover datatable" id="gridlist" url-data-source="{% url 'cliente.list_json_cliente' %}">
+    {% csrf_token %}
+    <thead>
+        <tr>
+            <th width="15%">Cnpj</th>
+            <th width="60%">Nome</th>
+            <th width="15%">Estado</th>
+            <th width="10%" class="no_sort"></th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot></tfoot>
+</table>
+{% endblock %}
+{% block jsblock %}
+    {{ block.super }}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            grid.fnStartObject({
+                'urlData' : "{% url 'cliente.list_json_cliente' %}",
+                'urlDel'  : '{{ request.get_full_path }}'+'remove/',
+                'tableObj': '#gridlist',
+                'aaSorting': [[1,'']],
+            });
+        });
+    </script>
+{% endblock %}

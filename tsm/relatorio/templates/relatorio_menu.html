@@ -1,0 +1,38 @@
+{% extends "layout.html"%}
+{% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block title %}Relatórios{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Início" "/" %}
+    {% breadcrumb "Relatórios" "/relatorio/" %}
+{% endblock %}
+
+{% block breadcrumbrender %}
+    {% render_breadcrumbs %}
+{% endblock %}
+
+{% block contentDetail %}
+    <div class="page-header">
+        <h2>Menu de Relatórios</h2>
+    </div>
+    <div class="container-flow">
+        <div class="row">
+            <h3>Oportunidade</h3>
+            <ul>
+                <li><a href="{% url 'oportunidade.rtc_gerencial' %}">RTC Gerencial</a></li>
+            </ul>
+        </div>
+        <!--<div class="row">
+            <h3>Resultado</h3>
+            <ul>
+                <li><a href="#">Desencaixe do Ponderado</a></li>
+                <li><a href="#">Heat do Forecast</a></li>
+                <li><a href="#">Linearidade 15/22/30</a></li>
+                <li><a href="#">Compromisso P/U</a></li>
+            </ul>
+        </div>-->
+    </div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base_list.html"%}
+{% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block title %}Atribuições de Membros{% endblock %}
+{% block subtitle %}Histórico de atribuções de membros à equipes da filial.{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Histórico" "/core/historico/" %}
+    {% breadcrumb "Atribuições de Membro" "/equipe/membro/historico/" %}
+{% endblock %}
+
+{% block breadcrumbrender %}
+    {% render_breadcrumbs %}
+{% endblock %}
+
+{% block tablelist %}
+<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered table-striped table-hover datatable" id="gridlist" url-data-source="{% url 'equipe.list_json_membrohistorico' %}">
+    {% csrf_token %}
+    <thead>
+        <tr class="custom-head">
+            <th width="25%">Criador</th>
+            <th width="25%">Membro Adicionado</th>
+            <th width="25%">Líder da Equipe</th>
+            <th width="20%">Ocorrido em</th>
+            <th width="5%" class="no_sort"></th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot></tfoot>
+</table>
+{% endblock %}
+{% block jsblock %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'js/grid.js' %}" ></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            grid.fnStartObject({
+                'urlData' : "{% url 'equipe.list_json_membrohistorico' %}",
+                'urlDel'  : '',
+                'tableObj': '#gridlist',
+                'aaSorting': [[3,'desc']]
+            });
+
+            $('#btnAddList').hide(); 
+        });
+    </script>
+{% endblock %}

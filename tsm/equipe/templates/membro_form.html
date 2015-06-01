@@ -1,0 +1,26 @@
+{% load bootstrap_toolkit %}
+{% load staticfiles %}
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h2 class="modal-title">{{ object.usuario.first_name }} {{ object.usuario.last_name }}</h2>
+    <small>Informações sobre o membro e metas cadastradas.</small>
+    <p class="msg_error"></p>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <form class="form-horizontal frmMembroEdit" onSubmit="return false;">
+            <fieldset>
+                <legend>Detalhes</legend>
+                {% csrf_token %}
+                {{ form|as_bootstrap }}
+            </fieldset>
+        </form>
+    </div>
+    <div class="row" id="id-div-meta-form"></div>
+</div>
+<div class="modal-footer">
+    <button type="button" id="btnRemoveMember" class="btn btn-sm btn-danger pull-left" ng-click="onClickDelMember(membroModal.membro_id)"><i class="icon-white icon-remove"></i>Remover Membro</button>
+    <button type="button" class="btn btn-sm btn-default pull-right" data-dismiss="modal">Fechar</button>
+</div>
+<script type="text/javascript" src="{% static 'js/forms.js' %}" ></script>

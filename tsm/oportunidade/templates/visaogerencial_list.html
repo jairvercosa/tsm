@@ -1,0 +1,178 @@
+{% extends "layout.html"%}
+{% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block title %}Visão Gerencial de Oportunidades{% endblock %}
+{% block subtitle %}Lista de tipos de receitas em que um oportunidade por estar{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Início" "/" %}
+    {% breadcrumb "Oportunidades" "/oportunidade/" %}
+    {% breadcrumb "Visão Gerencial" "/oportunidade/visaogerencial/" %}
+{% endblock %}
+
+{% block breadcrumbrender %}
+    {% render_breadcrumbs %}
+{% endblock %}
+
+{% block contentDetail %}
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/jquery.jqplot.min.css' %}" />
+    <style type="text/css">
+        
+        #id_chart_filial, #id_chart_responsavel, #id_chart_lider {
+            width: 150px !important;
+        }
+        #id_chart_responsavel .jqplot-point-label, #id_chart_lider .jqplot-point-label {
+            color: #fff;
+        }
+        #id_chart_responsavel {
+            width: 200px;
+        }
+        #id_chart_ponderado .jqplot-xaxis, 
+        #id_chart_filial .jqplot-xaxis, 
+        #id_chart_responsavel .jqplot-xaxis, 
+        #id_chart_lider .jqplot-xaxis,
+        #span-total-gross,
+        #span-total-ponderado,
+        #span-total-situacao,
+        #span-total-fator {
+            display: none;
+        }
+        .jqplot-table-legend {
+            border: 0px !important;
+        }
+        #id_chart_situacao .jqplot-table-legend {
+            top: -47px !important;
+            right: 0px !important;
+        }
+    </style>
+    <div id="tooltip1b"></div>
+    <div ng-app="viewOppApp">
+        <div class="page-header">
+            <h2>Visão Gerencial</h2>
+            <small>Exibção das oportunidades com indicadores de performance.</small>
+        </div>
+        <div ng-controller="ngViewOppCtrl">
+            <div class="div-table-oportunidade col-lg-12">
+                <div class="oportunidade-indicador-all">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Indicadores Gerais</h3>
+                        </div>
+                        <div class="panel-body" style="padding: 4px 0px;">
+                            <div class="col-lg-3">
+                                <h5>FCST Gross</h5>
+                                <small id="span-total-gross">{[{ dataChartsTop.gross.total | currency:"R$ " }]}</small>
+                                <div id="id_chart_gross" class="panel-chart"></div>
+                            </div>
+                            <div class="col-lg-3">
+                                <h5>FCST Ponderado</h5>
+                                <small id="span-total-ponderado">{[{ dataChartsTop.ponderado.total | currency:"R$ " }]}</small>
+                                <div id="id_chart_ponderado" class="panel-chart"></div>
+                            </div>
+                            <div class="col-lg-3">
+                                <h5>Fator P/U</h5>
+                                <small id="span-total-situacao">{[{ dataChartsTop.situacao.total | currency:"R$ " }]}</small>
+                                <div id="id_chart_situacao" class="panel-chart"></div>
+                            </div>
+                            <div class="col-lg-3">
+                                <h5>Fator {[{ dataChartsTop.fator.perc }]}</h5>
+                                <small id="span-total-fator">{[{ dataChartsTop.fator.total | currency:"R$ " }]}</small>
+                                <div id="id_chart_fator" class="panel-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="div-table-oportunidade">
+                <div class="oportunidade-list col-lg-9">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Oportunidades</h3>
+                        </div>
+                        <div class="panel-body">
+                            <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-hover table-condensed datatable custom-table well" id="gridlist" url-data-source="{% url 'oportunidade.list_json_visaogerencial' %}">
+                                <thead>
+                                    <tr class="custom-head">
+                                        <th width="15%">Cliente</th>
+                                        <th width="5%">Tipo</th>
+                                        <th width="7%">Status</th>
+                                        <th width="10%">Valor</th>
+                                        <th width="9%">Pond.</th>
+                                        <th width="7%">Temp. Sistema</th>
+                                        <th width="7%">Temp. Manual</th>
+                                        <th width="15%">Responsável</th>
+                                        <th width="15%">Líder</th>
+                                        <th width="9%">Previsão</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th><input type="text" name="search_cliente" value="" class="search_init" /></th>
+                                        <th><input type="text" name="search_tipo" value="" class="search_init" /></th>
+                                        <th><input type="text" name="search_status" value="" class="search_init" /></th>
+                                        <th><input type="hidden" name="search_valor" value="" class="search_init" /></th>
+                                        <th><input type="hidden" name="search_ponderado" value="" class="search_init" /></th>
+                                        <th><input type="text" name="search_temp_sistema" value="" class="search_init" /></th>
+                                        <th><input type="text" name="search_temp_manual" value="" class="search_init" /></th>
+                                        <th><input type="text" name="search_responsavel" value="" class="search_init" /></th>
+                                        <th><input type="text" name="search_lider" value="" class="search_init" /></th>
+                                        <th><input type="text" name="search_dtfechamento" value="" class="search_init" /></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div id="div-charts-oportunidade" class="col-lg-3">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Indicadores de Metas</h3>
+                        </div>
+                        <div class="panel-body">
+                            <!--<div>
+                                <h5>Oportunidade x Filial</h5>
+                                <div id="id_chart_filial" class="panel-chart"></div>
+                            </div>-->
+                            <div>
+                                <h5>Oportunidade x Meta</h5>
+                                <small>(Responsável)</small>
+                                <div id="id_chart_responsavel" class="panel-chart"></div>
+                            </div>
+                            <div>
+                                <h5>Oportunidade x Meta</h5>
+                                <small>(Líder)</small>
+                                <div id="id_chart_lider" class="panel-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsblock %}
+    <script type="text/javascript" src="{% static 'js/jquery.dataTables.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/angular.min.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/grid.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/jquery.number.min.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/jquery.jqplot.min.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/jqplot.barRenderer.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jqplot.categoryAxisRenderer.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jqplot.pointLabels.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jqplot.realFormatter.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/oportunidade.js' %}" ></script>
+    
+    <script type="text/javascript">
+        $(document).ready(function(){
+            grid.fnStartObject({
+                'urlData' : "{% url 'oportunidade.list_json_visaogerencial' %}",
+                'urlDel'  : '{{ request.get_full_path }}'+'remove/',
+                'tableObj': '#gridlist',
+                'aaSorting': [[9,'desc']]
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% load bootstrap_toolkit %}
+{% load staticfiles %}
+
+<form class="form-horizontal frmMetaEdit" redirect_data="" method="post" action="{{ request.get_full_path }}" id="formMetas" onSubmit="return false;">
+    <fieldset>
+        <legend>Metas</legend>
+        <div><small>Inclua os valores de metas para os tipos de meta.</small></div>
+        {% csrf_token %}
+        {{ form|as_bootstrap }}
+        <div class="control-group addButton">
+            <button type="submit" class="btn btn-sm btn-info" ng-click="onClickAddGoalGroup()"><i class="icon-white icon-plus"></i> Adicionar</button>
+        </div>
+    </fieldset>
+</form>    
+<div>
+    <ul class="ul-metas">
+        <li class="well" ng-repeat="goal in membroModal.metas" visible-on-add>
+            <div class="col-lg-2">
+                <label>Tipo</label>
+                <span>{[{ goal.tipometa }]}</span>
+            </div>
+            <div class="col-lg-2">
+                <label>Receita</label>
+                <span>{[{ goal.receita }]}</span>
+            </div>
+            <div class="col-lg-3">
+                <label>Valor</label>
+                <span>{[{ goal.valor | currency:"R$ " }]}</span>
+            </div>
+            <div class="col-lg-2">
+                <label>Vigência</label>
+                <span>{[{ goal.mesVigencia }]}/{[{ goal.anoVigencia }]}</span>
+            </div>
+            <div class="col-lg-2">
+                <label class="ele-visible">Visível</label>
+                <div class="check-visible ele-visible" ng-class="{'icon-checked' : goal.isVisible, 'icon-unchecked': !goal.isVisible}">
+                    <a href="javascript:void(0)" ng-click="onClickCheckGoal(goal.id)" class="link-check" ></a>
+                </div>
+            </div>
+            <div class="col-lg-1">
+                <button class="btn btn-sm btn-danger remove-goal pull-right" ng-click="onClickDelGoalGroup(goal.id)"><i class="icon-white icon-remove"></i></button>
+            </div>
+        </li>
+    </ul>
+</div>
+<script type="text/javascript" src="{% static 'js/forms.js' %}" ></script>
+<script type="text/javascript">
+    form.formObject = $('.frmMetaEdit');
+    form.urlAction = $(form.formObject).attr('action');
+    form.urlRedirection = $(form.formObject).attr('redirect_data');
+</script>

@@ -1,0 +1,37 @@
+{% extends "base_form.html"%}
+{% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+{% load bootstrap_toolkit %}
+
+{% block title %}Fabricante{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Cadastros Básicos" "/core/cadastros/" %}
+    {% breadcrumb "Fabricantes" "/cliente/fabricantes/" %}
+    {% breadcrumb form.nome.value|add:' ' "/" %}
+{% endblock %}
+
+{% block breadcrumbrender %}
+    {% render_breadcrumbs %}
+{% endblock %}
+
+
+{% block formRender %}
+    <div class="row">
+        <div class="col-lg-6 ">
+            <div class="response_form alert alert-dismissable"><span></span></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 top-buffer-10">
+            <form class="form-horizontal" redirect_data="{% url 'cliente.list_fabricante' %}" method="post" action="{{ request.get_full_path }}" id="formFabricantes" onSubmit="return false;">
+                {% csrf_token %}
+                {{ form|as_bootstrap }}
+                {% block button %}
+                    {{ block.super }}
+                {% endblock %}
+            </form>
+        </div>
+    </div>
+{% endblock %}

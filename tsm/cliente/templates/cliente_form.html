@@ -1,0 +1,51 @@
+{% extends "base_form.html"%}
+{% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+{% load bootstrap_toolkit %}
+
+{% block title %}Cliente{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Clientes" "/cliente/" %}
+    {% breadcrumb "Lista de Clientes" "/cliente/clientes/" %}
+    {% breadcrumb form.nome.value|add:' ' "/" %}
+{% endblock %}
+
+{% block breadcrumbrender %}
+    {% render_breadcrumbs %}
+{% endblock %}
+
+
+{% block formRender %}
+    <div class="row">
+        <div class="col-lg-6 ">
+            <div class="response_form alert alert-dismissable"><span></span></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 top-buffer-10">
+            <form class="form-horizontal" redirect_data="{% url 'cliente.list_cliente' %}" method="post" action="{{ request.get_full_path }}" id="formClientes" onSubmit="return false;">
+                {% csrf_token %}
+                {{ form|as_bootstrap }}
+                {% block button %}
+                    {{ block.super }}
+                {% endblock %}
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsblock %}
+    <script type="text/javascript" src="{% static 'js/jquery.maskedinput.js' %}" ></script>
+    {{ block.super }}
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var maskCnpj = '99.999.999/9999-99';
+            $('#id_cnpj').mask(maskCnpj);
+            $('#id_cnpj_matriz').mask(maskCnpj);
+            $('#id_cep').mask('99999-999');
+        });
+    </script>
+{% endblock %}

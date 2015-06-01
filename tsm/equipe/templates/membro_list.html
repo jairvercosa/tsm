@@ -1,0 +1,31 @@
+{% load bootstrap_toolkit %}
+{% load staticfiles %}
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h2 class="modal-title">Membros da Equipe</h2>
+    <small>Membros do nível {[{ iLevelModal }]}</small>
+</div>
+<div class="modal-body">
+    <div id="id_token">{% csrf_token %}</div>
+    <div>
+        <ul class="ul-metas">
+            <li class="well" ng-repeat="member in levels[iLevelModal].members" visible-on-add>
+                <div class="col-lg-3">
+                    <label>Nome</label>
+                    <span>{[{ member.first_name }]} {[{ member.last_name }]}</span>
+                </div>
+                <div class="col-lg-7">
+                    <label>Cargo</label>
+                    <span>{[{ member.funcao }]}</span>
+                </div>
+                <div class="col-lg-2">
+                    <button class="btn btn-sm btn-danger remove-goal pull-right" ng-click="onClickDelMember(member.membro_id)"><i class="icon-white icon-remove"></i></button>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Fechar</button>
+</div>

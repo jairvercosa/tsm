@@ -1,0 +1,45 @@
+{% extends "base_list.html"%}
+{% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block title %}Funções{% endblock %}
+{% block subtitle %}Lista de cargos para usuários{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Cadastros Básicos" "/core/cadastros/" %}
+    {% breadcrumb "Funções" "/acesso/funcoes/" %}
+{% endblock %}
+
+{% block breadcrumbrender %}
+    {% render_breadcrumbs %}
+{% endblock %}
+
+
+{% block tablelist %}
+<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered table-striped table-hover datatable" id="gridlist" url-data-source="{% url 'acesso.list_json_funcao' %}">
+    {% csrf_token %}
+    <thead>
+        <tr>
+            <th width="15%" class="no_sort">Código</th>
+            <th width="75%">Nome</th>
+            <th width="10%" class="no_sort"></th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot></tfoot>
+</table>
+{% endblock %}
+{% block jsblock %}
+    {{ block.super }}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            grid.fnStartObject({
+                'urlData' : "{% url 'acesso.list_json_funcao' %}",
+                'urlDel'  : '{{ request.get_full_path }}'+'remove/',
+                'tableObj': '#gridlist',
+                "aaSorting": [[ 1, "" ]]
+            });
+        });
+    </script>
+{% endblock %}

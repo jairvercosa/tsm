@@ -1,0 +1,37 @@
+{% extends "base_form.html"%}
+{% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+{% load bootstrap_toolkit %}
+
+{% block title %}Atribuições de Meta{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Históricos" "/core/historico/" %}
+    {% breadcrumb "Atribuições de Meta" "/equipe/membro/meta/historico/" %}
+    {% breadcrumb form.nome_membro|add:' ' "/" %}
+{% endblock %}
+
+{% block breadcrumbrender %}
+    {% render_breadcrumbs %}
+{% endblock %}
+
+
+{% block formRender %}
+    <div class="row">
+        <div class="col-lg-6 ">
+            <div class="response_form alert alert-dismissable"><span></span></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 top-buffer-10">
+            <form class="form-horizontal" redirect_data="{% url 'equipe.list_membrometahistorico' %}" method="post" action="{{ request.get_full_path }}" id="formHistorico" onSubmit="return false;">
+                {% csrf_token %}
+                {{ form|as_bootstrap }}
+                {% block button %}
+                    <button class="btn btn-sm btn-outline btn-default" id="btnCancel"><i class="icon-white icon-remove icon-ajust"></i>Cancelar</button>
+                {% endblock %}
+            </form>
+        </div>
+    </div>
+{% endblock %}

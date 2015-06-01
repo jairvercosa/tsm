@@ -1,0 +1,56 @@
+{% extends "base_form.html"%}
+{% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+{% load bootstrap_toolkit %}
+
+{% block title %}Evento{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Oportunidades" "/oportunidade/" %}
+    {% breadcrumb "Minhas Oportunidades" "/oportunidade/lista/" %}
+    {% breadcrumb oportunidade.cliente.nome "/oportunidade/lista/"|add:oportunidadeUrl %}
+    {% breadcrumb "RTC" "/oportunidade/lista/"|add:oportunidadeUrl|add:"rtc/" %}
+    {% breadcrumb "Evento" "/oportunidade/lista/"|add:oportunidade.id %}
+{% endblock %}
+
+{% block breadcrumbrender %}
+    {% render_breadcrumbs %}
+{% endblock %}
+
+
+{% block formRender %}
+    <div class="row">
+        <div class="col-lg-6 ">
+            <div class="response_form alert alert-dismissable"><span></span></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 top-buffer-10">
+            <form class="form-horizontal" redirect_data="/oportunidade/lista/{{oportunidade.id}}/rtc/" method="post" action="{{ request.get_full_path }}" id="formRtc" onSubmit="return false;">
+                {% csrf_token %}
+                {{ form|as_bootstrap }}
+                {% block button %}
+                    {{ block.super }}
+                {% endblock %}
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsblock %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'js/jquery-ui-1.10.4.custom.min.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/jquery.maskedinput.js' %}" ></script>
+    <script type="text/javascript">
+        {% if returnOp %}
+            var idOp = $('#id_oportunidade').val();
+            $('#formRtc').attr('redirect_data','/oportunidade/lista/'+idOp+'/');
+        {% endif %}
+
+        $(document).ready(function(){
+            $('#id_data').datepicker(app.datePickerBr);
+            $('#id_hora').mask("99:99");
+        });
+    </script>
+{% endblock %}

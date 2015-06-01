@@ -1,0 +1,32 @@
+{% extends "base_form_ajax.html"%}
+{% load staticfiles %}
+{% load bootstrap_toolkit %}
+
+{% block title %}Inclusão de Clientes{% endblock %}
+
+{% block formRender %}
+    <div class="row">
+        <div class="col-lg-6 ">
+            <div class="response_form alert alert-dismissable"><span></span></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8 top-buffer-10">
+            <form class="form-horizontal" method="post" action="{% url 'cliente.add_cliente_min' %}" id="formClientes" onSubmit="return false;">
+                {% csrf_token %}
+                {{ form|as_bootstrap }}
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsblock %}
+    <script type="text/javascript" src="{% static 'js/jquery.maskedinput.js' %}" ></script>
+    {{ block.super }}
+    <script type="text/javascript">
+        $(document).ready(function(){ 
+            var maskCnpj = '99.999.999/9999-99'; 
+            $('#id_cnpj').mask(maskCnpj);
+        });
+    </script>
+{% endblock %}

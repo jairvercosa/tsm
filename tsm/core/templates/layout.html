@@ -1,0 +1,19 @@
+{% extends "viewport.html"%}
+{% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+{% endblock %}
+
+{% block title %}TOTVS Sales Management{% endblock %}
+ 
+{% block content %}
+    <div class="container-flow">
+        <div class="row">
+            {% block breadcrumbrender %}{% endblock %}
+        </div>
+        <div class="row">
+            {% block contentDetail %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,68 @@
+# Translation for message from password validators
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-08-25 21:50-0300\n"
+"PO-Revision-Date: 2014-08-26 21:50-0300\n"
+"Last-Translator: Jair Vercosa <jair.filho@totvs.com.br>\n"
+"Language-Team: Portuguese Brazil <LL@li.org>\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: templates/usuario_list.html:25
+msgid "User"
+msgstr "Usuário"
+
+#: passwords/validators:30
+msgid "Invalid Length (%s)"
+msgstr "Tamanho inválido (%s)"
+
+#: passwords/validators:40
+msgid "Must be %s characters or more"
+msgstr "Deveria ter %s caracteres ou mais"
+
+#: passwords/validators:44
+msgid "Must be %s characters or less"
+msgstr "Deveria ter %s caracteres ou menos"
+
+#: passwords/validators:48
+msgid "Must be more complex (%s)"
+msgstr "Deve ser mais complexo (%s)"
+
+#: passwords/validators:78
+msgid "Must contain %(UPPER)s or more uppercase characters"
+msgstr "Deve conter %(UPPER)s ou mais caracteres maiúsculos"
+
+#: passwords/validators:82
+msgid "Must contain %(LOWER)s or more lowercase characters"
+msgstr "Deve conter %(LOWER)s ou mais caracteres minúsculos"
+
+#: passwords/validators:86
+msgid "Must contain %(DIGITS)s or more digits"
+msgstr "Deve conter %(DIGITS)s ou mais dígitos"
+
+#: passwords/validators:90
+msgid "Must contain %(PUNCTUATION)s or more punctuation character"
+msgstr "Deve conter %(PUNCTUATION)s ou mais carateres de pontuação"
+
+#: passwords/validators:94
+msgid "Must contain %(NON ASCII)s or more non ascii characters"
+msgstr "Deve conter %(NON ASCII)s ou mais carateres ascii"
+
+#: passwords/validators:98
+msgid "Must contain %(WORDS)s or more unique words"
+msgstr "Deve conter %(WORDS)s ou mais palavras únicas"
+
+#: passwords/validators:139
+msgid "Based on a dictionary word."
+msgstr "Baseado em um dicionário de palavras."
+
+#: passwords/validators:155
+msgid "Based on a common sequence of characters"
+msgstr "Baseado em uma sequencia comum de caracteres"

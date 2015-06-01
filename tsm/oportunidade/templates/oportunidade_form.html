@@ -1,0 +1,124 @@
+{% extends "base_form.html"%}
+{% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+{% load bootstrap_toolkit %}
+
+{% block title %}Oportunidade{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Oportunidades" "/oportunidade/" %}
+    {% breadcrumb "Minhas Oportunidades" "/oportunidade/lista/" %}
+    {% breadcrumb form.cliente.nome.value|add:' ' "/" %}
+{% endblock %}
+
+{% block breadcrumbrender %}
+    {% render_breadcrumbs %}
+{% endblock %}
+
+
+{% block formRender %}
+    <div ng-app="opApp">
+        <div class="row">
+            <div class="col-lg-6 ">
+                <div class="response_form alert alert-dismissable"><span></span></div>
+            </div>
+        </div>
+        <div class="row row-oportunidade" ng-controller="ngOpFormCtrl">
+            <div class="col-lg-6 top-buffer-10">
+                <form class="form-horizontal" redirect_data="{% url 'oportunidade.list_oportunidade' %}" method="post" action="{{ request.get_full_path }}" id="formOportunidades" onSubmit="return false;">
+                    {% csrf_token %}
+                    {{ form|as_bootstrap }}
+                    {% block button %}
+                        {{ block.super }}
+                    {% endblock %}
+                </form>
+            </div>
+            <div class="col-lg-4 col-lg-offset-2 top-buffer-10">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>Perguntas</h4>
+                        <small>Para trocar a resposta clique em um dos botões</smal>
+                    </div>
+                    <div class="penel-body">
+                        <ul class="ul-perguntas">
+                        {% for questao in questoes %}
+                            <li>
+                                <div class="col-lg-9 no-padding">
+                                    <label>{{ questao.pergunta }}</label>
+                                </div>
+                                <div class="col-lg-3 no-padding">
+                                    <input type="hidden" name="valQuestSim" value="{{ questao.sim }}" />
+                                    <input type="hidden" name="valQuestNao" value="{{ questao.nao }}" />
+                                    <input type="hidden" name="valResposta" value="{{ questao.resposta }}" />
+                                    <input type="hidden" name="idQuestao"   value="{{ questao.id }}" />
+                                    <button 
+                                        type="button" 
+                                        name="btnStatusQuestao" 
+                                        class="btn btn-sm 
+                                            {% if questao.resposta %} 
+                                                {% if questao.sim > 0 %}
+                                                    btn-success 
+                                                {% else %}
+                                                    btn-danger 
+                                                {% endif %}
+                                            {% else %} 
+                                                {% if questao.nao > 0 %}
+                                                    btn-success 
+                                                {% else %}
+                                                    btn-danger 
+                                                {% endif %}
+                                            {% endif %}"
+                                    >{% if questao.resposta %} Sim {% else %} Não {% endif %}
+                                    </button>
+                                </div>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div id="id-div-rtc">
+                    <fieldset>
+                        <legend>RTC</legend>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th width="12%">Data</th>
+                                    <th>Descrição</th>
+                                    <th width="12%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in rtc %}
+                                <tr>
+                                    <th>{{ item.data|date:"d" }} {{ item.data|date:"M" }}</th>
+                                    <th>{{ item.descricao }}</th>
+                                    <th>
+                                        <a href="/oportunidade/lista/{{ item.oportunidade.id }}/rtc/{{ item.id }}/?return"><i class="icon-lapis icon-miniatura"></i></a>
+                                    </th>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <button class="btn btn-sm btn-info" id="btnAddRtc"><i class="icon icon-white icon-plus"></i>Adicionar</button>
+                        <button class="btn btn-sm btn-primary" id="btnRtcCompleto"><i class="icon icon-white icon-search"></i>RTC Completo</button>
+                    </fieldset>
+                </div>
+                <div class="modal fade" id="mdl_form">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsblock %}
+    {{ block.super }}
+    <script type="text/javascript">var isNew = {% if object.id %}false{% else %}true{% endif %}</script>
+    <script type="text/javascript" src="{% static 'js/angular.min.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/jquery-ui-1.10.4.custom.min.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/jquery.ui.combobox.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/oportunidadeform.js' %}" ></script>
+{% endblock %}

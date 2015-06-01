@@ -1,0 +1,30 @@
+{% extends "layout.html"%}
+{% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block title %}Clientes{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Início" "/" %}
+    {% breadcrumb "Clientes" "/cliente/" %}
+{% endblock %}
+
+{% block breadcrumbrender %}
+    {% render_breadcrumbs %}
+{% endblock %}
+
+{% block contentDetail %}
+    <div class="page-header">
+        <h2>Clientes</h2>
+    </div>
+    <div class="container-flow">
+        <div class="row">
+            <ul>
+                <li><a href="{% url 'cliente.list_cliente' %}">Clientes</a></li>
+                <li><a href="{% url 'cliente.list_contato' %}">Contatos</a></li>
+                <li><a href="{% url 'cliente.list_segmento' %}">Segmentos</a></li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}

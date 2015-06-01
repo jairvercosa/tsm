@@ -1,0 +1,124 @@
+{% extends "layout.html"%}
+{% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/fullcalendar.css' %}" />
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/fullcalendar.print.css' %}" />
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/dataTables.fixedColumns.css' %}" />
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Início" "/" %}
+    {% breadcrumb "Relatórios" "/relatorio/" %}
+    {% breadcrumb "RTC Gerencial" "" %}
+{% endblock %}
+
+{% block breadcrumbrender %}
+    {% render_breadcrumbs %}
+{% endblock %}
+
+{% block contentDetail %}
+    <div class="page-header">
+        <h2>{% block title %}RTC Gerencial{% endblock %}</h2>
+        <small>{% block subtitle %}RTC das oportunidades abertas.{% endblock %}</small>
+    </div>
+    <div class="row" ng-app="viewRtcApp" ng-controller="ngViewRtcCtrl">
+        <div class="col-lg-4">
+            <div class="control-group">
+                <div class="controls">
+                    <div class="col-lg-3 no-padding">
+                        <label class="control-label" for="id_visao" >Visão por:</label>
+                    </div>
+                    <div class="col-lg-9 no-padding">
+                        <select id="id_visao" name="visao" >
+                        {% for usuario in usuarios %}
+                            {% if not usuario.is_superuser %}
+                                <option value="{{ usuario.id }}" {% if usuario.id == request.user.id %}selected="selected"{% endif %}>
+                                    {{ usuario.first_name }} {{ usuario.last_name }}
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="pull-right">
+                <div class="col-lg-3 text-right">
+                    <label class="control-label">Período de</label>
+                </div>
+                <div class="col-lg-3 no-padding">
+                    <input type="text" name="periodo_ini" id="id_periodo_ini" class="dateField" value="{{ hoje }}" />
+                </div>
+                <div class="col-lg-1 text-center">
+                    <label class="control-label">até</label>
+                </div>
+                <div class="col-lg-3 no-padding">
+                    <input type="text" name="periodo_fim" id="id_periodo_fim" class="dateField" value="{{ range }}"/>
+                </div>
+                <div class="col-lg-2 no-padding-right ">
+                    <button class="btn btn-sm btn-info" ng-click="onClickBuscar()"><i class="icon icon-white icon-search"></i>Buscar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row bottom-buffer-20">
+        <div class="col-lg-12">
+            <small><i class="icon-info-sign"></i> Os eventos abaixo correspondem aos RTCs das oportunidades do usuário selecionado e seus liderados, segundo a hierarquia definida no menu <a href="{% url 'equipe.list_equipe' %}" target="_blank">"Minha Equipe"</a>.</small>
+        </div>
+    </div>
+    <div>
+        <table 
+            cellpadding="0" 
+            cellspacing="0" 
+            border="0" 
+            class="table table-bordered table-striped datatable" 
+            id="gridlist" 
+            url-data-source="">
+            <thead><tr class="custom-head"></tr></thead>
+            <tbody></tbody>
+            <tfoot></tfoot>
+        </table>
+    </div>
+    <div class="modal fade" id="mdl_event"></div><!-- /.modal -->
+    <div class="modal fade" id="mdl_print">
+        <div class="modal-dialog modal-event">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h2>Imprimir</h2>
+                </div>
+                <form action="">
+                    <div class="model-body">
+                        <div class="form-control">
+                            <label>Agrupamento:</label>
+                            <select id="">
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-info" data-dismiss="modal">OK</button>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <code id="id_cod_btn_report" class="element-hidden">
+        <div class="col-lg-6">
+            <button class="btn btn-sm btn-info pull-right" id="btnPrint"><i class="icon icon-white icon-print"></i>Imprmir</button>
+        </div>
+    </code>
+{% endblock %}
+
+{% block jsblock %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'js/jquery-ui-1.10.4.custom.min.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/jquery.dataTables.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/jquery.fixedColumns.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/angular.min.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/rtcgerencial.js' %}" ></script>
+{% endblock %}

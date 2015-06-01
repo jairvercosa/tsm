@@ -1,0 +1,51 @@
+<div class="modal-dialog modal-event">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h2>{{ object.data|date:"d" }} de {{ object.data|date:"M" }} de {{ object.data|date:"Y" }}</h2>
+        </div>
+        <div class="model-body">
+            <ul>
+                <li>
+                    <div class="col-lg-4 event-label">Oportunidade CRM:</div>
+                    <div class="col-lg-8">{{ object.oportunidade.codcrm }}</div>
+                </li>
+                <li>
+                    <div class="col-lg-4 event-label">Cliente:</div>
+                    <div class="col-lg-8">{{ object.oportunidade.cliente.nome }}</div>
+                </li>
+                <li>
+                    <div class="col-lg-4 event-label">Responsável:</div>
+                    <div class="col-lg-8">{{ object.oportunidade.responsavel.first_name }} {{ object.oportunidade.responsavel.last_name }}</div>
+                </li>
+                <li>
+                    <div class="col-lg-4 event-label">Líder:</div>
+                    <div class="col-lg-8">{{ object.oportunidade.lider.first_name }} {{ object.oportunidade.lider.last_name }}</div>
+                </li>
+                <li>
+                    <div class="col-lg-4 event-label">Hora:</div>
+                    <div class="col-lg-8">{{ object.hora }}</div>
+                </li>
+                <li>
+                    <div class="col-lg-4 event-label">Atividade:</div>
+                    <div class="col-lg-8">{{ object.descricao }}</div>
+                </li>
+                {% if object.recursos.all %}
+                <li>
+                    <div class="col-lg-4 event-label">Envolvidos:</div>
+                    <div class="col-lg-8">
+                        <ul>
+                        {% for envolvido in object.recursos.all %}
+                            <li>{{ envolvido.first_name }} {{ envolvido.last_name }}</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-info" data-dismiss="modal">OK</button>
+        </div>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->

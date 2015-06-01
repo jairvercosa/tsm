@@ -1,0 +1,260 @@
+{% extends "base_list.html"%}
+{% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block title %}Minhas Oportunidades{% endblock %}
+{% block subtitle %}Lista de oportunidades relacionadas com seu usuário.{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Oportunidades" "/oportunidade/" %}
+    {% breadcrumb "Minhas Oportunidades" "/oportunidade/lista/" %}
+{% endblock %}
+
+{% block breadcrumbrender %}
+    {% render_breadcrumbs %}
+{% endblock %}
+
+{% block tablelist %}
+<style type="text/css">
+    #ui-datepicker-div { z-index: 9000 !important; }
+</style>
+<div>
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-bordered table-striped table-hover datatable" id="gridlist" url-data-source="{% url 'oportunidade.list_json_oportunidade' %}">
+        {% csrf_token %}
+        <thead>
+            <tr class="custom-head">
+                <th width="9%">Cliente</th>
+                <th width="5%" class="hidden-xs">Tipo</th>
+                <th width="5%" class="hidden-xs">Produto</th>
+                <th class="hidden-xs">Status</th>
+                <th >Valor</th>
+                <th class="hidden-xs hidden-sm">Pond.</th>
+                <th class="hidden-xs hidden-sm hidden-md">Temp. Sistema</th>
+                <th class="hidden-xs ">Temp. Manual</th>
+                <th width="5%" >Responsável</th>
+                <th width="5%" class="hidden-xs hidden-sm">Líder</th>
+                <th width="4%" >Fechamento</th>
+                <th class="hidden-xs">RTC</th>
+                <th class="no_sort hidden-xs">MW</th>
+                <th class="no_sort hidden-xs">BC</th>
+                <th width="8%" class="no_sort"></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+            <tr class="tr-totalizer">
+                <th></th>
+                <th class="hidden-xs"></th>
+                <th class="hidden-xs"></th>
+                <th class="hidden-xs"></th>
+                <th ><span id="id_subtotal"></span></th>
+                <th class="hidden-xs hidden-sm"><span id="id_subtotal_pond"></span></th>
+                <th class="hidden-xs hidden-sm hidden-md"></th>
+                <th class="hidden-xs"></th>
+                <th ></th>
+                <th class="hidden-xs hidden-sm"></th>
+                <th ></th>
+                <th class="hidden-xs"></th>
+                <th class="hidden-xs"></th>
+                <th class="hidden-xs"></th>
+                <th></th>
+            </tr>
+            <tr class="tr-filters-list">
+                <th><input type="text" name="cliente" value="" class="search_init" label_text="Cliente" /></th>
+                <th class="hidden-xs th-dropdown">
+                    <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+                        Tipo <span class="caret"></span>
+                    </button>
+                    <ul id="id-ul-receita" class="dropdown-menu">
+                        {% for receita in receitas %}
+                        <li>
+                            <div>
+                                <a href="javascript:void(0)" alt="{{ receita.pk }}" class="icon-checked checkinput" >{{ receita.nome }}</a>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </th>
+                <th class="hidden-xs">
+                    <select name="produto" class="search_init">
+                        <option value=""></option>
+                        {% for opt in optProdutos %}
+                        <option value="{{opt.pk}}">{{ opt.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </th>
+                <th class="hidden-xs th-dropdown">
+                    <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+                        Status <span class="caret"></span>
+                    </button>
+                    <ul id="id-ul-situacao" class="dropdown-menu">
+                        {% for situacao in situacoes %}
+                        <li>
+                            <div>
+                                <a href="javascript:void(0)" alt="{{ situacao.pk }}" class="icon-checked checkinput" >{{ situacao.nome }}</a>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </th>
+                <th>
+                    <select name="valor" class="search_init">
+                        {% for opt in optVals %}
+                        <option value="{{forloop.counter0}}">{{ opt.label }}</option>
+                        {% endfor %}
+                    </select>
+                </th>
+                <th class="hidden-xs hidden-sm">
+                    <select name="ponderado" class="search_init">
+                        {% for opt in optVals %}
+                        <option value="{{forloop.counter0}}">{{ opt.label }}</option>
+                        {% endfor %}
+                    </select>
+                </th>
+                <th class="hidden-xs hidden-sm hidden-md th-dropdown">
+                    <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+                        Temp. <span class="caret"></span>
+                    </button>
+                    <ul id="id-ul-tempauto" class="dropdown-menu">
+                        <li><div><a href="javascript:void(0)" alt="Alta" class="icon-checked checkinput" >Alta</a></div></li>
+                        <li><div><a href="javascript:void(0)" alt="Média" class="icon-checked checkinput" >Média</a></div></li>
+                        <li><div><a href="javascript:void(0)" alt="Baixa" class="icon-checked checkinput" >Baixa</a></div></li>
+                    </ul>
+                </th>
+                <th class="hidden-xs th-dropdown">
+                    <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+                        Temp. <span class="caret"></span>
+                    </button>
+                    <ul id="id-ul-temp" class="dropdown-menu">
+                        {% for temperatura in temperaturas %}
+                        <li>
+                            <div>
+                                <a href="javascript:void(0)" alt="{{ temperatura.pk }}" class="{% if temperatura.tipo %} icon-unchecked {% else %} icon-checked {% endif %} checkinput" >{{ temperatura.nome }}</a>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </th>
+                <th>
+                    <select name="responsavel" class="search_init element-hidden select-members" label_text="Responsável"><option value=""></option></select>
+                    <span class="ajaxLoading"><img src="{% static 'img/ajax-loader.gif' %}" /></span>
+                </th>
+                <th class="hidden-xs hidden-sm">
+                    <select name="lider" class="search_init element-hidden select-members" label_text="Líder"><option value=""></option></select>
+                    <span class="ajaxLoading"><img src="{% static 'img/ajax-loader.gif' %}" /></span>
+                </th>
+                <th ><input type="text" name="dtfechamento" value="" class="search_init" label_text="Previsão Fech." /></th>
+                <th class="hidden-xs">
+                    <select name="rtc" class="search_init">
+                        <option value="">Ambos</option>
+                        <option value="1">Sim</option>
+                        <option value="0">Não</option>
+                    </select>
+                </th>
+                <th class="hidden-xs">
+                    <select name="mw" class="search_init">
+                        <option value="">Ambos</option>
+                        <option value="1">Sim</option>
+                        <option value="0">Não</option>
+                    </select>
+                </th>
+                <th class="hidden-xs">
+                    <select name="bc" class="search_init">
+                        <option value="">Ambos</option>
+                        <option value="1">Sim</option>
+                        <option value="0">Não</option>
+                    </select>
+                </th>
+                <th>
+                    <button class="btn btn-sm btn-success" id="btnSearch" title="Buscar"><i class="icon-search icon-white"></i><span class="hidden-xs">Buscar</span></button>
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+<!--Formulario de edicao do filtro de fechamento-->
+<div class="well border-well div-form-date">
+    <form onSubmit="return false;">
+        <div class="row">
+            <div class="col-lg-2">
+                <label class="control-label" for="id_dia_ini" >De:</label>
+            </div>
+            <div class="col-lg-7">
+                <div class="control-group">
+                    <div class="controls">
+                        <input type="text" id="id_dia_ini" name="dia_ini" value="" class="dateField"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2">
+                <label class="control-label" for="id_dia_fim" >Até:</label>
+            </div>
+            <div class="col-lg-7">
+                <div class="control-group">
+                    <div class="controls">
+                        <input type="text" id="id_dia_fim" name="dia_fim" value="" class="dateField"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<!--/.formulario-->
+<div class="top-buffer-25">
+    <small class="hidden-xs hidden-sm hidden-md"><i class="icon-info-sign"></i> Atenção, o total exibido nesta página reflete o somatório das oportunidades através de todas as páginas da tabela.</small>
+</div>
+<div class="modal fade" id="mdl_form_saving">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Salvando...</h4>
+            </div>
+            <div class="modal-body">
+                <span class="ajaxLoading"><img src="{% static 'img/ajax-loader.gif' %}" /></span>
+                <p id="modal_msg_error"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-primary" data-dismiss="modal">ok</button>
+            </div>
+        </div>
+    </div>
+</div><!-- /.modal -->
+{% endblock %}
+
+{% block modalMsg%}
+    <div class="modal fade" id="mdlMsg_TSM">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="panel panel-danger">
+                    <div class="panel-heading">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Excluir</h4>
+                    </div>    
+                    <div class="panel-body">
+                        A exclusão da oportunidade resultará na perda de todo seu histórico impedindo consultas futuras. Realmente deseja excluir esta oportunidade?
+                    </div>
+                    <div class="panel-footer">
+                        <button type="button" class="btn btn-sm btn-primary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-sm btn-warning" id="btnConfirmDel">Confirmar</button>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+{% endblock %}
+
+{% block jsblock %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'js/jquery.number.min.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/jquery-ui-1.10.4.custom.min.js' %}" ></script>
+    <script type="text/javascript">
+        var receita={{ receita|safe }}; var situacao={{ situacao|safe }}; 
+        var tipotemperatura={{ temperatura|safe }}; var canChangeMWBC = {% if perms.oportunidade.can_change_mw_bc %} true {% else %} false {% endif %};
+        var produto={{ produto|safe }};
+        {% if dataFilter %} var preFilter = {{ dataFilter|safe }}; {% endif %}
+    </script>
+    <script type="text/javascript" src="{% static 'js/oportunidadelist.js' %}" ></script>
+{% endblock %}
